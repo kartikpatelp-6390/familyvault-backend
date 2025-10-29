@@ -21,7 +21,7 @@ export class BankAccountController {
 
   @Get('member/:memberId')
   async findAllByMember(@Req() req, @Param('memberId') memberId: string) {
-    return await this.service.findAllByMember(req.tenantConn, memberId);
+    return await this.service.findAllByMember(req.tenantConn, memberId, req.user.tenantId);
   }
 
   @Get(':id')

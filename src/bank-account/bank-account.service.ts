@@ -73,10 +73,10 @@ export class BankAccountService {
     return await BankAccountModel.find().setOptions({ tenantId }).sort({ createdAt: -1 });
   }
 
-  async findAllByMember(conn: mongoose.Connection, memberId: string) {
+  async findAllByMember(conn: mongoose.Connection, memberId: string, tenantId: string) {
     const BankAccountModel = this.getModel(conn) as mongoose.Model<any>;
 
-    return await BankAccountModel.find({ memberId }).sort({ createdAt: -1 }).exec();
+    return await BankAccountModel.find({ memberId }).setOptions({ tenantId }).sort({ createdAt: -1 }).exec();
   }
 
   async findOne(conn: mongoose.Connection, id: string, tenantId: string) {
