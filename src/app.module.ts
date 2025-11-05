@@ -15,6 +15,9 @@ import { DocumentModule } from './document/document.module';
 import { RolesModule } from './roles/roles.module';
 import { ConfModule } from './conf/conf.module';
 import { BankAccountModule } from './bank-account/bank-account.module';
+import { MemberSharedAccessModule } from './member-shared-access/member-shared-access.module';
+import { AccessGuard } from './common/guards/access.guard';
+import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 
 
 @Module({
@@ -39,14 +42,11 @@ import { BankAccountModule } from './bank-account/bank-account.module';
     FamilyMemberModule,
     DocumentModule,
     BankAccountModule,
+    MemberSharedAccessModule,
   ],
   controllers: [ExampleController],
   providers: [
-    {
-      provide: APP_GUARD,
-      useClass: RolesGuard,
-    },
-    TenantConnectionManager, JwtStrategy
+    TenantConnectionManager, JwtStrategy, AccessGuard
   ],
 })
 export class AppModule {

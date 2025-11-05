@@ -3,9 +3,11 @@ import { BankAccountService } from './bank-account.service';
 import { CreateBankAccountDto } from './dto/create-bank-account.dto';
 import { UpdateBankAccountDto } from './dto/update-bank-account.dto';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
+import { Permissions } from '../common/decorators/permissions.decorator';
+import { AccessGuard } from '../common/guards/access.guard';
 
 @Controller('bank-account')
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, AccessGuard)
 export class BankAccountController {
   constructor(private readonly service: BankAccountService) {}
 
@@ -19,6 +21,7 @@ export class BankAccountController {
     return this.service.findAll(req.tenantConn, req.user.tenantId);
   }
 
+  @Permissions({ module_key: 'bankaccount', action: 'read' })
   @Get('member/:memberId')
   async findAllByMember(@Req() req, @Param('memberId') memberId: string) {
     return await this.service.findAllByMember(req.tenantConn, memberId, req.user.tenantId);
