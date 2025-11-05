@@ -124,7 +124,25 @@ export class SuperadminService {
   // Get modules assigned to a tenant
   async getTenantModules(conn: mongoose.Connection, tenantId: string) {
     const ClientModule = this.getClientModuleModel(conn);
-    return ClientModule.find({ tenant_id: tenantId }).lean();
+    const Module = this.getModuleModel(conn);
+
+    // Get both lists
+    const [clientModules, allModules] = await Promise.all([
+      ClientModule.find({ tenant_id: tenantId }).lean(),
+      Module.find().lean(),
+    ]);
+
+    // Merge by module_key
+    const merged = clientModules.map((cm) => {
+      const mod = allModules.find((m) => m.module_key === cm.module_key);
+      return {
+        ...cm,
+        module_name: mod?.module_name || null,
+        description: mod?.description || null,
+      };
+    });
+
+    return merged;
   }
 
   async getActiveModules(conn: mongoose.Connection) {
